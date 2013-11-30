@@ -1,15 +1,11 @@
 from flask.ext.restful import Resource, fields, marshal_with
 
-resource_fields = {
-        'name': fields.String,
-        'priority': fields.Integer,
-        }
 
-class ItemDao(object):
-    def __init__(self, item_id, name, priority):
-        self.item_id= item_id
-        self.name = name
-        self.priority = priority
+resource_fields = {
+    'name': fields.String,
+    'priority': fields.Integer
+}
+
 
 class Item(Resource):
     @marshal_with(resource_fields)
@@ -23,4 +19,11 @@ class Item(Resource):
         pass
 
     def put(self, **kwargs):
+        pass
+
+class Items(Resource):
+    def get(self):
+        pass
+
+    def post(self):
         pass
