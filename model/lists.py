@@ -34,6 +34,9 @@ class List(Resource):
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))
 
+    def put(self, list_id):
+        pass
+
 
 class Lists(Resource):
    

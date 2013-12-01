@@ -1,25 +1,41 @@
-from flask.ext.restful import Resource, fields, marshal_with
-from model.list import List
+from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with
+from database import MongoConnection
+from bson.objectid import ObjectId
+from pymongo.errors import InvalidId
+
+
+parser = reqparse.RequestParser()
+parser.add_argument('name', type=str)
+parser.add_argument('password', type=str)
 
 resource_fields = {
         'name': fields.String,
-        'lists': List,
-        }
+        'password': fields.String
+    }
 
-class UserDao(object):
-    def __init__(self, user_id, name):
-        self.user_id = user_id 
-        self.name = name
+
+USERS = MongoConnection(db='slistapi', collection='users').db
+
 
 class User(Resource):
-    @marshal_with(resource_fields)
-    def get(self, **kwargs):
-        pass
+    def delete(self):
+        try:
+            USERS.remove({"_id": ObjectId("string")})
+            return '', 204
+        except InvalidId:
+            abort(404, message="List {} doesn't exist".format("string"))
 
-    def delete(self, **kwargs):
-        pass
 
-    def post(self, **kwargs):
-        pass
+class Users(Resource):
+    def get(self):
+        users = {}
+        for user in USERS.find():
+            users[user.pop("_id").__str__()] = user
 
-    def put(self, **kwargs):
+        return users
+
+    def post(self):
+        args = parser.parse_args()
+        list_id = USERS.insert({'name': args['name'], 'password': args['password']})
+        return list_id.__str__(), 201
+
