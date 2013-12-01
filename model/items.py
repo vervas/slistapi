@@ -1,4 +1,5 @@
 from flask.ext.restful import reqparse, abort, Resource
+from flask.ext.login import login_required
 from model.lists import LISTS
 from bson.objectid import ObjectId
 from pymongo.errors import InvalidId
@@ -10,6 +11,7 @@ parser.add_argument('priority', type=int)
 
 
 class Item(Resource):
+    @login_required
     def delete(self, list_id, name):
         try:
             LISTS.update({'_id': ObjectId(list_id)},
@@ -27,12 +29,14 @@ class Item(Resource):
 
 
 class Items(Resource):
+    @login_required
     def get(self, list_id):
         try:
             return LISTS.find_one({"_id": ObjectId(list_id)})['items']
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))        
 
+    @login_required
     def post(self, list_id):
         args = parser.parse_args()
         try: 

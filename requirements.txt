@@ -1,4 +1,5 @@
 flask-restful
 flask-login
+flask-bcrypt
 pymongo
 
