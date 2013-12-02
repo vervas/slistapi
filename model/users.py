@@ -10,7 +10,7 @@ parser.add_argument('username', type=str)
 parser.add_argument('password', type=str)
 
 resource_fields = {
-        'name': fields.String,
+        'username': fields.String,
         'password': fields.String
     }
 
