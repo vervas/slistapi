@@ -1,5 +1,5 @@
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with
-from model.item import Item
+from model.items import Item
 from database import MongoConnection
 from bson.objectid import ObjectId
 from pymongo.errors import InvalidId
