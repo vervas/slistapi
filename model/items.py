@@ -1,5 +1,5 @@
 from flask.ext.restful import reqparse, abort, Resource
-from model.lists import LISTS
+from database import MongoConnection
 from bson.objectid import ObjectId
 from pymongo.errors import InvalidId
 
@@ -8,6 +8,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('name', type=str)
 parser.add_argument('priority', type=int)
 
+LISTS = MongoConnection(db='slistapi', collection='lists').db
 
 class Item(Resource):
     def delete(self, list_id, name):
