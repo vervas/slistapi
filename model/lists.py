@@ -23,7 +23,6 @@ class List(Resource):
     @marshal_with(resource_fields)
     def get(self, list_id):
         try:
-            #import pdb; pdb.set_trace()
             return LISTS.find_one({"_id": ObjectId(list_id)})
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))

@@ -27,7 +27,6 @@ class User(Resource):
     @marshal_with(resource_fields)
     def get(self, user_id):
         try:
-            import pdb; pdb.set_trace()
             return USERS.find_one({"_id": ObjectId(user_id)})
         except InvalidId:
             abort(404, message="User {} doesn't exist".format(user_id))
