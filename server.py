@@ -17,5 +17,7 @@ api.add_resource(items.Item, '/lists/<string:list_id>/items/<string:name>')
 api.add_resource(users.Users, '/users')
 api.add_resource(users.User, '/users/<string:user_id>')
 
+api.add_resource(lists.ListUser, '/lists/<string:list_id>/users/<string:user_id>')
+
 if __name__ == '__main__':
     app.run(debug=True)

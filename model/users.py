@@ -1,5 +1,6 @@
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with
 from flask.ext.bcrypt import generate_password_hash, check_password_hash
+from model.lists import LISTS
 from database import MongoConnection
 from bson.objectid import ObjectId
 from pymongo.errors import InvalidId
@@ -33,6 +34,13 @@ class User(Resource):
 
     def delete(self, user_id):
         try:
+            LISTS.update({'users': user_id},
+                    {'$pop':
+                        {
+                            'users': user_id
+                        }
+                    },
+                    upsert=False, multi=True)
             USERS.remove({"_id": ObjectId(user_id)})
             return '', 204
         except InvalidId:
