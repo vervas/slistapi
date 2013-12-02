@@ -20,4 +20,4 @@ api.add_resource(users.User, '/users/<string:user_id>')
 api.add_resource(lists.ListUser, '/lists/<string:list_id>/users/<string:user_id>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
