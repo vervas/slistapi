@@ -1,4 +1,4 @@
-from flask.ext.restful import reqparse, abort, Resource, fields
+from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with
 from flask.ext.bcrypt import generate_password_hash, check_password_hash
 from database import MongoConnection
 from bson.objectid import ObjectId
@@ -24,10 +24,11 @@ class User(Resource):
         self.username = username
         self.password = password
 
+    @marshal_with(resource_fields)
     def get(self, user_id):
         try:
-            user = USERS.find_one({"_id": ObjectId(user_id)})
-            return User(unicode(user['_id']), user['username'])
+            import pdb; pdb.set_trace()
+            return USERS.find_one({"_id": ObjectId(user_id)})
         except InvalidId:
             abort(404, message="User {} doesn't exist".format(user_id))
 

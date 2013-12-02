@@ -1,4 +1,4 @@
-from flask.ext.restful import reqparse, abort, Resource
+from flask.ext.restful import reqparse, abort, Resource, fields
 from database import MongoConnection
 from bson.objectid import ObjectId
 from pymongo.errors import InvalidId
@@ -10,7 +10,7 @@ parser.add_argument('priority', type=int)
 
 LISTS = MongoConnection(db='slistapi', collection='lists').db
 
-class Item(Resource):
+class Item(Resource, fields.Raw):
     def delete(self, list_id, name):
         try:
             LISTS.update({'_id': ObjectId(list_id)},

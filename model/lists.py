@@ -10,7 +10,7 @@ parser.add_argument('name', type=str)
 
 resource_fields = {
     'name': fields.String,
-    'items': fields.List(fields.Nested(Item)),
+    'items': fields.List(Item),
     'users': fields.List(fields.String)
 }
 
@@ -23,6 +23,7 @@ class List(Resource):
     @marshal_with(resource_fields)
     def get(self, list_id):
         try:
+            #import pdb; pdb.set_trace()
             return LISTS.find_one({"_id": ObjectId(list_id)})
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))
@@ -48,5 +49,5 @@ class Lists(Resource):
 
     def post(self):
         args = parser.parse_args()
-        list_id = LISTS.insert({'name': args['name'], 'items': [], 'users': []})
+        list_id = LISTS.insert({'name': args['name'], 'items': [], 'users': [args['user_id']]})
         return list_id.__str__(), 201
