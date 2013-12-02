@@ -17,7 +17,7 @@ resource_fields = {
 
 
 LISTS = MongoConnection(db='slistapi', collection='lists').db
-
+USERS = MongoConnection(db='slistapi', collection='users').db
 
 class List(Resource):
 
@@ -38,6 +38,8 @@ class List(Resource):
     def put(self, list_id):
         args = parser.parse_args()
         try:
+            if not USERS.find_one({"_id": ObjectId(args['user_id'])}):
+                abort(404, message="User {} doesn't exist".format(args['user_id']))
             item = LISTS.update({'_id': ObjectId(list_id)},
                     {'$push':
                         {
@@ -45,7 +47,10 @@ class List(Resource):
                         }
                     },
                     upsert=False)
-            return item['updatedExisting'], 201
+            if item['updatedExisting']:
+                return '', 204
+            else:
+                return '', 404
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))
 
@@ -60,7 +65,10 @@ class ListUser(Resource):
                         }
                     },
                     upsert=False)
-            return item['updatedExisting'], 201
+            if item['updatedExisting']:
+                return '', 204
+            else:
+                return '', 404
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))
 
