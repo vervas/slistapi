@@ -35,24 +35,19 @@ class List(Resource):
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))
 
-    def put(self, list_id):
+
+class Lists(Resource):
+    def get(self):
+        lists = {}
+        for list_ in LISTS.find():
+            lists[list_.pop("_id").__str__()] = list_
+
+        return lists
+
+    def post(self):
         args = parser.parse_args()
-        try:
-            if not USERS.find_one({"_id": ObjectId(args['user_id'])}):
-                abort(404, message="User {} doesn't exist".format(args['user_id']))
-            item = LISTS.update({'_id': ObjectId(list_id)},
-                    {'$push':
-                        {
-                            'users': args['user_id']
-                        }
-                    },
-                    upsert=False)
-            if item['updatedExisting']:
-                return '', 204
-            else:
-                return '', 404
-        except InvalidId:
-            abort(404, message="List {} doesn't exist".format(list_id))
+        list_id = LISTS.insert({'name': args['name'], 'items': [], 'users': [args['user_id']]})
+        return list_id.__str__(), 201
 
 
 class ListUser(Resource):
@@ -72,15 +67,28 @@ class ListUser(Resource):
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))
 
-class Lists(Resource):
-    def get(self):
-        lists = {}
-        for list_ in LISTS.find():
-            lists[list_.pop("_id").__str__()] = list_
+    def put(self, list_id, user_id):
+        try:
+            if not USERS.find_one({"_id": ObjectId(user_id)}):
+                abort(404, message="User {} doesn't exist".format(user_id))
+            item = LISTS.update({'_id': ObjectId(list_id)},
+                    {'$push':
+                        {
+                            'users': user_id
+                        }
+                    },
+                    upsert=False)
+            if item['updatedExisting']:
+                return '', 204
+            else:
+                return '', 404
+        except InvalidId:
+            abort(404, message="List {} doesn't exist".format(list_id))
 
-        return lists
 
-    def post(self):
-        args = parser.parse_args()
-        list_id = LISTS.insert({'name': args['name'], 'items': [], 'users': [args['user_id']]})
-        return list_id.__str__(), 201
+class ListUsers(Resource):
+    def get(self, list_id):
+        try:
+            return LISTS.find_one({"_id": ObjectId(list_id)})['users']
+        except InvalidId:
+            abort(404, message="List {} doesn't exist".format(list_id))

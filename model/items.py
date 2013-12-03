@@ -24,7 +24,7 @@ class Item(Resource, fields.Raw):
                     upsert=False)
             return '', 204
         except InvalidId:
-            abort(404, message="List {} doesn't exist".format(list_id))        
+            abort(404, message="List {} doesn't exist".format(list_id))
 
 
 class Items(Resource):
@@ -32,11 +32,11 @@ class Items(Resource):
         try:
             return LISTS.find_one({"_id": ObjectId(list_id)})['items']
         except InvalidId:
-            abort(404, message="List {} doesn't exist".format(list_id))        
+            abort(404, message="List {} doesn't exist".format(list_id))
 
     def post(self, list_id):
         args = parser.parse_args()
-        try: 
+        try:
             item = LISTS.update({'_id': ObjectId(list_id)},
                     {'$push':
                         {
@@ -52,4 +52,4 @@ class Items(Resource):
                     upsert=False)
             return item['updatedExisting'], 201
         except InvalidId:
-            abort(404, message="List {} doesn't exist".format(list_id))        
+            abort(404, message="List {} doesn't exist".format(list_id))
