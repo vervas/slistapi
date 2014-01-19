@@ -1,9 +1,10 @@
+import os
 from flask import Flask
 from flask.ext.restful import Api
 from model import lists, items, users
 
 app = Flask(__name__)
-app.secret_key= 'XUE8bTX/BaqE/C3m5VgBAA=='
+app.secret_key = 'XUE8bTX/BaqE/C3m5VgBAA=='
 
 api = Api(app)
 
@@ -21,4 +22,10 @@ api.add_resource(lists.ListUsers, '/lists/<string:list_id>/users')
 api.add_resource(lists.ListUser, '/lists/<string:list_id>/users/<string:user_id>')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    try:
+        port = int(os.environ['PORT'])
+    except KeyError:
+        port = 5000
+
+    app.debug = True
+    app.run(host='0.0.0.0', port=port)
