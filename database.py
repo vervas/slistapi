@@ -7,7 +7,7 @@ class MongoConnection():
         try:
             uri = os.environ['MONGOLAB_URI']
             client = MongoClient(uri)
+            self.db = client.get_default_database()[collection]
         except KeyError:
             client = MongoClient(host, port)
-
-        self.db = client[db][collection]
+            self.db = client[db][collection]
