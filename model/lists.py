@@ -16,8 +16,9 @@ resource_fields = {
 }
 
 
-LISTS = MongoConnection(db='slistapi', collection='lists').db
-USERS = MongoConnection(db='slistapi', collection='users').db
+LISTS = MongoConnection(collection='lists').db
+USERS = MongoConnection(collection='users').db
+
 
 class List(Resource):
 
@@ -54,12 +55,12 @@ class ListUser(Resource):
     def delete(self, list_id, user_id):
         try:
             item = LISTS.update({'_id': ObjectId(list_id)},
-                    {'$pop':
-                        {
-                            'users': user_id
-                        }
-                    },
-                    upsert=False)
+                                {'$pop':
+                                    {
+                                        'users': user_id
+                                    }
+                                },
+                                upsert=False)
             if item['updatedExisting']:
                 return '', 204
             else:
@@ -72,12 +73,12 @@ class ListUser(Resource):
             if not USERS.find_one({"_id": ObjectId(user_id)}):
                 abort(404, message="User {} doesn't exist".format(user_id))
             item = LISTS.update({'_id': ObjectId(list_id)},
-                    {'$push':
-                        {
-                            'users': user_id
-                        }
-                    },
-                    upsert=False)
+                                {'$push':
+                                    {
+                                        'users': user_id
+                                    }
+                                },
+                                upsert=False)
             if item['updatedExisting']:
                 return '', 204
             else:

@@ -8,20 +8,21 @@ parser = reqparse.RequestParser()
 parser.add_argument('name', type=str)
 parser.add_argument('priority', type=int)
 
-LISTS = MongoConnection(db='slistapi', collection='lists').db
+LISTS = MongoConnection(collection='lists').db
+
 
 class Item(Resource, fields.Raw):
     def delete(self, list_id, name):
         try:
             LISTS.update({'_id': ObjectId(list_id)},
-                    {'$pull':
-                        {
-                            'items': {
-                                'name': name
-                            }
-                        }
-                    },
-                    upsert=False)
+                         {'$pull':
+                             {
+                                 'items': {
+                                     'name': name
+                                 }
+                             }
+                         },
+                         upsert=False)
             return '', 204
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))
@@ -38,18 +39,18 @@ class Items(Resource):
         args = parser.parse_args()
         try:
             item = LISTS.update({'_id': ObjectId(list_id)},
-                    {'$push':
-                        {
-                            'items': {
-                                '$each': [
-                                    {'name': args['name'], 'priority': args['priority']}
-                                ],
-                                '$sort': {'priority': 1},
-                                '$slice': -120
-                            }
-                        }
-                    },
-                    upsert=False)
+                                {'$push':
+                                    {
+                                        'items': {
+                                            '$each': [
+                                                {'name': args['name'], 'priority': args['priority']}
+                                            ],
+                                            '$sort': {'priority': 1},
+                                            '$slice': -120
+                                        }
+                                    }
+                                },
+                                upsert=False)
             return item['updatedExisting'], 201
         except InvalidId:
             abort(404, message="List {} doesn't exist".format(list_id))

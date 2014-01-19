@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 
 class MongoConnection():
-    def __init__(self, host='localhost', port=27017, db='', collection=''):
+    def __init__(self, host='localhost', port=27017, db='slistapi', collection=''):
         try:
             uri = os.environ['MONGOLAB_URI']
             client = MongoClient(uri)
